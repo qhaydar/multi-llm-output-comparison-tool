@@ -1,12 +1,13 @@
-# python-chatbot
-## Python Chatbot
+# conversation-chatbot
+## Python Chatbot with Conversation Memory
 
-A simple Python-based chatbot that uses OpenAI's GPT model (e.g., GPT-5) to provide sarcastic, humorous replies to user input via the command line.
+A simple Python-based chatbot that uses OpenAI's GPT model (e.g., GPT-5) to provide sarcastic, humorous replies to user input via the command line. This version **remembers the conversation** across turns, building context as you chat.
 
 ### Features
 
 - Conversational interface in your terminal.
 - Sarcastic, humorous personality powered by OpenAI's GPT.
+- **Conversation memory**: each exchange is retained for context.
 - Handles errors gracefully.
 
 ### Requirements
@@ -20,8 +21,8 @@ A simple Python-based chatbot that uses OpenAI's GPT model (e.g., GPT-5) to prov
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/yourusername/python-chatbot.git
-    cd python-chatbot
+    git clone https://github.com/qhaydar/conversation-chatbot.git
+    cd conversation-chatbot
     ```
 
 2. **Install dependencies:**
@@ -65,6 +66,8 @@ You: hello
 Chatbot: Oh joy, another human. What *extraordinary* thing can I do for you today?
 You: How's the weather?
 Chatbot: It's just as you'd expect—outside, mainly. Would you like me to check your window for you?
+You: tell me a joke
+Chatbot: Why did the AI cross the road? Because it was programmed to get to the other side of the data.
 You: bye
 Chatbot: Bye!
 ```
@@ -72,4 +75,5 @@ Chatbot: Bye!
 ### Notes
 
 - The chatbot replies will reflect a sarcastic, humorous tone thanks to the system prompt configuration.
+- Conversation memory means the model sees the full chat history, enabling more coherent and context‑aware responses.
 - If you receive errors, ensure your OpenAI API key is set correctly and you have an active internet connection.
