@@ -20,6 +20,7 @@ import sys
 
 # OpenAI
 from openai import OpenAI
+import time
 
 # Anthropic (Claude Sonnet)
 try:
@@ -83,38 +84,49 @@ def get_gemini_reply(user_message: str, history: list) -> str:
 # Main interactive loop
 # ---------------------------------------------------------------------------
 
-def main() -> None:
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+
+async def async_get_reply(func, user_message: str, history: list) -> tuple[str, float]:
+    """Run a synchronous LLM reply function in a thread pool and return its result plus elapsed time.
+    Returns a tuple of (reply, duration_seconds)."""
+    loop = asyncio.get_running_loop()
+    start = time.perf_counter()
+    result = await loop.run_in_executor(None, func, user_message, history)
+    elapsed = time.perf_counter() - start
+    return result, elapsed
+
+async def main_async() -> None:
     openai_history = [{"role": "system", "content": SYSTEM_PROMPT}]
     claude_history = [{"role": "system", "content": SYSTEM_PROMPT}]
     gemini_history = [{"role": "system", "content": SYSTEM_PROMPT}]
 
+    executor = ThreadPoolExecutor(max_workers=3)
     while True:
         user_input = input("You: ")
         if user_input.lower() == "bye":
             print("👋 Bye!")
             break
-        try:
-            oa_reply = get_openai_reply(user_input, openai_history)
+        # Schedule all three model calls concurrently and capture timing
+        oa_task = asyncio.create_task(async_get_reply(get_openai_reply, user_input, openai_history))
+        cl_task = asyncio.create_task(async_get_reply(get_claude_reply, user_input, claude_history))
+        gm_task = asyncio.create_task(async_get_reply(get_gemini_reply, user_input, gemini_history))
+        # Await all results (they run in parallel threads) – each returns (reply, duration)
+        (oa_reply, oa_time), (cl_reply, cl_time), (gm_reply, gm_time) = await asyncio.gather(oa_task, cl_task, gm_task)
+        # Update histories after successful calls
+        if not oa_reply.startswith("[Error"):
             openai_history.append({"role": "user", "content": user_input})
             openai_history.append({"role": "assistant", "content": oa_reply})
-        except Exception as e:
-            oa_reply = f"[Error: {e}]"
-        try:
-            cl_reply = get_claude_reply(user_input, claude_history)
+        if not cl_reply.startswith("[Error"):
             claude_history.append({"role": "user", "content": user_input})
             claude_history.append({"role": "assistant", "content": cl_reply})
-        except Exception as e:
-            cl_reply = f"[Error: {e}]"
-        try:
-            gm_reply = get_gemini_reply(user_input, gemini_history)
+        if not gm_reply.startswith("[Error"):
             gemini_history.append({"role": "user", "content": user_input})
             gemini_history.append({"role": "assistant", "content": gm_reply})
-        except Exception as e:
-            gm_reply = f"[Error: {e}]"
         print("\n--- Model Responses ---")
-        print(f"OpenAI   : {oa_reply}")
-        print(f"Claude    : {cl_reply}")
-        print(f"Gemini   : {gm_reply}\n")
+        print(f"OpenAI   : {oa_reply} (took {oa_time:.2f}s)")
+        print(f"Claude   : {cl_reply} (took {cl_time:.2f}s)")
+        print(f"Gemini  : {gm_reply} (took {gm_time:.2f}s)\n")
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main_async())

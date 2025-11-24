@@ -9,9 +9,10 @@ Use it to test, evaluate, and contrast how different LLMs respond to identical i
 
 ## 🚀 Features
 
-- Send a prompt once and receive responses from multiple LLMs  
-- Compare outputs side-by-side for easy inspection  
-- Track metadata like tokens used, latency, and cost (if supported)  
+- Send a prompt once and receive responses from multiple LLMs
+- Compare outputs side‑by‑side for easy inspection
+- Track metadata like tokens used, **latency (time taken for each model)**, and cost (if supported)
+- **Each model’s response now includes the elapsed time in seconds**
 - Useful for:
   - Model selection
   - Prompt engineering
