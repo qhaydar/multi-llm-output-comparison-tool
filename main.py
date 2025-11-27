@@ -74,7 +74,7 @@ def get_gemini_reply(user_message: str, history: list) -> str:
     if genai is None:
         raise RuntimeError("google-generativeai package not installed")
     genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-3-pro-preview")
     context = "\n".join([f"{m['role']}: {m['content']}" for m in history])
     prompt = f"System: {SYSTEM_PROMPT}\n{context}\nUser: {user_message}"
     response = model.generate_content(prompt)

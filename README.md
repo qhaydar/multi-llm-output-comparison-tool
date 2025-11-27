@@ -2,8 +2,8 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue)](https://www.python.org/)
 
-A Python-based utility for comparing outputs from multiple Large Language Models (LLMs) given the same prompt.  
-Use it to test, evaluate, and contrast how different LLMs respond to identical input.
+A Python-based utility for comparing outputs from **OpenAI GPT**, **Anthropic Claude**, and **Google Gemini 3.0** given the same prompt.  
+Use it to test, evaluate, and contrast how different LLMs respond to identical input in parallel.
 
 ---
 
@@ -25,7 +25,7 @@ Use it to test, evaluate, and contrast how different LLMs respond to identical i
 ### Requirements
 
 - Python 3.8 or newer  
-- API credentials for your LLM providers (e.g., OpenAI, Anthropic, Mistral)  
+- API credentials for your LLM providers (OpenAI, Anthropic Claude, Google Gemini)  
 
 Install dependencies:
 ```bash
@@ -37,7 +37,8 @@ pip install -r requirements.txt
 1. Create an environment file (e.g., `.env`) with your API keys:
 ```bash
 OPENAI_API_KEY=<your_openai_key>
-# Add other provider keys as needed
+ANTHROPIC_API_KEY=<your_anthropic_key>
+GOOGLE_API_KEY=<your_google_api_key>
 ```
 
 2. Adjust provider/model settings in `main.py` or configuration files.
@@ -53,7 +54,7 @@ python main.py --prompt "Your prompt here" --models openai:gpt-4,anthropic:claud
 Example:
 
 ```bash
-python main.py --prompt "Summarize the lifecycle of a butterfly." --models openai:gpt-4,anthropic:claude-2,mistral:mixtral-8x7b
+python main.py --prompt "Summarize the lifecycle of a butterfly." --models openai:gpt-5,anthropic:claude-3-sonnet,google:gemini-3-pro-preview
 ```
 
 Results are printed or saved to files for comparison.
